@@ -1,0 +1,95 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*' # 触发条件改为推送新的版本标签
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+    - name: Build with PyInstaller
+      run: pyinstaller --onefile --windowed --name ImageDownloader image_downloader_gui.py
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ImageDownloader-Windows
+        path: dist/ImageDownloader.exe
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+    - name: Build with PyInstaller
+      run: pyinstaller --onefile --windowed --name ImageDownloader image_downloader_gui.py
+    - name: Create DMG
+      run: |
+        hdiutil create -volname ImageDownloader -srcfolder dist/ImageDownloader.app -ov -format UDZO ImageDownloader.dmg
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ImageDownloader-macOS
+        path: ImageDownloader.dmg
+
+  create-release:
+    needs: [build-windows, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+    - name: Download Windows artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: ImageDownloader-Windows
+    - name: Download macOS artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: ImageDownloader-macOS
+    - name: Upload Windows Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./ImageDownloader.exe
+        asset_name: ImageDownloader-Windows.exe
+        asset_content_type: application/octet-stream
+    - name: Upload macOS Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./ImageDownloader.dmg
+        asset_name: ImageDownloader-macOS.dmg
+        asset_content_type: application/x-apple-diskimage
