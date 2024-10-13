@@ -2,8 +2,7 @@ name: Build and Release
 
 on:
   push:
-    tags:
-      - 'v*' # 触发条件改为推送新的版本标签
+    branches: [ main ]
 
 jobs:
   build-windows:
