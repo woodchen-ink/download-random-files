@@ -44,7 +44,6 @@ jobs:
         pyinstaller --clean --noconfirm \
           --name ImageDownloader \
           --windowed \
-          --add-data "assets:assets" \
           --collect-all tkinter \
           image_downloader_gui.py
     - name: Create DMG
