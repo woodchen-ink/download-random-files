@@ -40,12 +40,7 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
     - name: Build with PyInstaller
-      run: |
-        pyinstaller --clean --noconfirm \
-          --name ImageDownloader \
-          --windowed \
-          --collect-all tkinter \
-          image_downloader_gui.py
+      run: pyinstaller ImageDownloader.spec
     - name: Create DMG
       run: |
         cd dist
@@ -55,6 +50,7 @@ jobs:
       with:
         name: ImageDownloader-macOS
         path: dist/ImageDownloader.dmg
+
 
 
   create-release:
