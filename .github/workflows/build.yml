@@ -40,15 +40,23 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
     - name: Build with PyInstaller
-      run: pyinstaller --onefile --windowed --name ImageDownloader image_downloader_gui.py --noconfirm
+      run: |
+        pyinstaller --clean --noconfirm \
+          --name ImageDownloader \
+          --windowed \
+          --add-data "assets:assets" \
+          --collect-all tkinter \
+          image_downloader_gui.py
     - name: Create DMG
       run: |
-        hdiutil create -volname ImageDownloader -srcfolder dist/ImageDownloader.app -ov -format UDZO ImageDownloader.dmg
+        cd dist
+        hdiutil create -volname ImageDownloader -srcfolder ImageDownloader.app -ov -format UDZO ImageDownloader.dmg
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: ImageDownloader-macOS
-        path: ImageDownloader.dmg
+        path: dist/ImageDownloader.dmg
+
 
   create-release:
     needs: [build-windows, build-macos]
