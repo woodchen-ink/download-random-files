@@ -52,10 +52,17 @@ coll = COLLECT(
     name='ImageDownloader'
 )
 
-# 关键是这里，不指定图标文件
 app = BUNDLE(
     coll,
     name='ImageDownloader.app',
-    icon=None,  # 明确设置为 None
-    bundle_identifier='com.example.imagedownloader'
+    icon='icons/logo800.icns',  # 指定 .icns 图标文件
+    bundle_identifier='com.example.imagedownloader',
+    info_plist={
+        'CFBundleName': 'ImageDownloader',
+        'CFBundleDisplayName': 'ImageDownloader',
+        'CFBundleExecutable': 'ImageDownloader',
+        'CFBundlePackageType': 'APPL',
+        'CFBundleIdentifier': 'com.example.imagedownloader',
+        'NSHighResolutionCapable': True,
+    }
 )
