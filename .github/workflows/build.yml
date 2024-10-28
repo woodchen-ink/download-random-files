@@ -3,6 +3,8 @@ name: Build and Release
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - '*.md'
 
 jobs:
   build-windows:
@@ -19,7 +21,7 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
     - name: Build with PyInstaller
-      run: pyinstaller --onefile --windowed --icon=icons/favicon.ico --name FilesDownloader 302files_downloader_gui.py
+      run: pyinstaller --onefile --windowed --icon=icons/favicon.ico --name FilesDownloader gui.py
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
@@ -41,7 +43,7 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
     - name: Build with PyInstaller
-      run: pyinstaller FilesDownloader.spec
+      run: pyinstaller gui.spec
     - name: Create DMG
       run: |
         cd dist

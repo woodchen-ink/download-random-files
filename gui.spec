@@ -2,7 +2,7 @@
 block_cipher = None
 
 a = Analysis(
-    ['302files_downloader_gui.py'],
+    ['gui.py'],
     pathex=[],
     binaries=[],
     datas=[],
