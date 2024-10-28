@@ -8,7 +8,7 @@ from tkinter import ttk, filedialog, messagebox, scrolledtext
 import threading
 from concurrent.futures import ThreadPoolExecutor
 
-class ImageDownloader:
+class FilesDownloader:
     def __init__(self, url, save_dir, request_interval=1, max_workers=5, log_callback=None):
         self.url = url
         self.save_dir = save_dir
@@ -77,7 +77,7 @@ class ImageDownloader:
                 parsed_url = urlparse(image_url)
                 file_extension = os.path.splitext(parsed_url.path)[1]
                 if not file_extension:
-                    file_extension = '.jpg'
+                    file_extension = '.unknown'
                 
                 filename = f"{image_hash}{file_extension}"
                 filepath = os.path.join(self.save_dir, filename)
@@ -93,7 +93,7 @@ class ImageDownloader:
                         self.log(f"已跳过: {filename} (已经存在)")
                         self.consecutive_duplicates += 1
             else:
-                self.log(f"下载图像失败。状态码: {response.status_code}")
+                self.log(f"下载文件失败。状态码: {response.status_code}")
         except Exception as e:
             self.log(f"发生错误: {str(e)}")
         
@@ -125,7 +125,7 @@ class Application(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
-        self.master.title("图片下载器")
+        self.master.title("302文件下载器")
         self.master.geometry("800x600")  # 增加初始窗口大小
         self.master.minsize(800, 600)    # 设置最小窗口大小
         self.master.configure(bg='#f0f0f0')
@@ -155,7 +155,7 @@ class Application(tk.Frame):
         ttk.Label(input_frame, text="保存目录:").grid(row=1, column=0, sticky="e", padx=5, pady=5)
         self.dir_entry = ttk.Entry(input_frame, width=50)
         self.dir_entry.grid(row=1, column=1, sticky="we", padx=5, pady=5)
-        self.dir_entry.insert(0, "downloaded_images")
+        self.dir_entry.insert(0, "downloaded")
         ttk.Button(input_frame, text="浏览", command=self.browse_directory).grid(row=1, column=2, padx=5, pady=5)
 
         # 设置区域
@@ -176,10 +176,10 @@ class Application(tk.Frame):
         button_frame = ttk.Frame(main_frame)
         button_frame.pack(fill=tk.X, padx=5, pady=10)
 
-        self.start_button = ttk.Button(button_frame, text="Start", command=self.start_download, width=15)
+        self.start_button = ttk.Button(button_frame, text="开始", command=self.start_download, width=15)
         self.start_button.pack(side=tk.LEFT, padx=5)
 
-        self.stop_button = ttk.Button(button_frame, text="Stop", command=self.stop_download, width=15, state=tk.DISABLED)
+        self.stop_button = ttk.Button(button_frame, text="停止", command=self.stop_download, width=15, state=tk.DISABLED)
         self.stop_button.pack(side=tk.LEFT, padx=5)
 
         # 日志区域
@@ -212,7 +212,7 @@ class Application(tk.Frame):
             messagebox.showerror("Error", "间隔或并发下载值无效。请输入数字。")
             return
 
-        self.downloader = ImageDownloader(url, save_dir, interval, max_workers, self.log)
+        self.downloader = FilesDownloader(url, save_dir, interval, max_workers, self.log)
         self.download_thread = threading.Thread(target=self.downloader.run)
         self.download_thread.daemon = True  # 设置为守护线程
         self.download_thread.start()

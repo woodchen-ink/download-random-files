@@ -19,12 +19,12 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
     - name: Build with PyInstaller
-      run: pyinstaller --onefile --windowed --icon=icons/favicon.ico --name ImageDownloader image_downloader_gui.py
+      run: pyinstaller --onefile --windowed --icon=icons/favicon.ico --name FilesDownloader 302files_downloader_gui.py
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ImageDownloader-Windows
-        path: dist/ImageDownloader.exe
+        name: FilesDownloader-Windows
+        path: dist/FilesDownloader.exe
 
 
   build-macos:
@@ -41,16 +41,16 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
     - name: Build with PyInstaller
-      run: pyinstaller ImageDownloader.spec
+      run: pyinstaller FilesDownloader.spec
     - name: Create DMG
       run: |
         cd dist
-        hdiutil create -volname ImageDownloader -srcfolder ImageDownloader.app -ov -format UDZO ImageDownloader.dmg
+        hdiutil create -volname FilesDownloader -srcfolder FilesDownloader.app -ov -format UDZO FilesDownloader.dmg
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ImageDownloader-macOS
-        path: dist/ImageDownloader.dmg
+        name: FilesDownloader-macOS
+        path: dist/FilesDownloader.dmg
 
 
   create-release:
@@ -83,12 +83,12 @@ jobs:
     - name: Download Windows artifact
       uses: actions/download-artifact@v4
       with:
-        name: ImageDownloader-Windows
+        name: FilesDownloader-Windows
 
     - name: Download macOS artifact
       uses: actions/download-artifact@v4
       with:
-        name: ImageDownloader-macOS
+        name: FilesDownloader-macOS
 
     - name: Upload Windows Release Asset
       uses: actions/upload-release-asset@v1
@@ -96,8 +96,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./ImageDownloader.exe
-        asset_name: ImageDownloader-Windows.exe
+        asset_path: ./FilesDownloader.exe
+        asset_name: FilesDownloader-Windows.exe
         asset_content_type: application/octet-stream
 
     - name: Upload macOS Release Asset
@@ -106,6 +106,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./ImageDownloader.dmg
-        asset_name: ImageDownloader-macOS.dmg
+        asset_path: ./FilesDownloader.dmg
+        asset_name: FilesDownloader-macOS.dmg
         asset_content_type: application/x-apple-diskimage

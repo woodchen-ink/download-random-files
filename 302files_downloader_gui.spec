@@ -1,8 +1,8 @@
-# ImageDownloader.spec
+# FilesDownloader.spec
 block_cipher = None
 
 a = Analysis(
-    ['image_downloader_gui.py'],
+    ['302files_downloader_gui.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -28,7 +28,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='ImageDownloader',
+    name='FilesDownloader',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -49,20 +49,20 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='ImageDownloader'
+    name='FilesDownloader'
 )
 
 app = BUNDLE(
     coll,
-    name='ImageDownloader.app',
+    name='FilesDownloader.app',
     icon='icons/logo800.icns',  # 指定 .icns 图标文件
-    bundle_identifier='com.example.imagedownloader',
+    bundle_identifier='com.example.FilesDownloader',
     info_plist={
-        'CFBundleName': 'ImageDownloader',
-        'CFBundleDisplayName': 'ImageDownloader',
-        'CFBundleExecutable': 'ImageDownloader',
+        'CFBundleName': 'FilesDownloader',
+        'CFBundleDisplayName': 'FilesDownloader',
+        'CFBundleExecutable': 'FilesDownloader',
         'CFBundlePackageType': 'APPL',
-        'CFBundleIdentifier': 'com.example.imagedownloader',
+        'CFBundleIdentifier': 'com.example.FilesDownloader',
         'NSHighResolutionCapable': True,
     }
 )
